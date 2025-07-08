@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Юридичний Консультант</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 2rem; }
+    .container { max-width: 700px; margin: auto; background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; }
+    #chat-box { border: 1px solid #ccc; padding: 1rem; height: 300px; overflow-y: scroll; background: #fafafa; margin-bottom: 1rem; }
+    .message { margin: 0.5rem 0; }
+    .user { text-align: right; color: blue; }
+    .bot { text-align: left; color: green; }
+    #user-input { width: 80%; padding: 0.5rem; }
+    button { padding: 0.5rem 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Юридичний Консультант</h1>
+
+    <div id="chat-section">
+      <div id="chat-box"></div>
+      <input type="text" id="user-input" placeholder="Ваше юридичне запитання...">
+      <button onclick="sendMessage()">Надіслати</button>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+      if (!message) return;
+
+      addMessage(message, 'user');
+      input.value = '';
+
+      try {
+        const response = await axios.post('https://your-vercel-app.vercel.app/ask', { message });
+        const reply = response.data.reply;
+        addMessage(reply, 'bot');
+      } catch (error) {
+        addMessage('Помилка при зверненні до AI.', 'bot');
+      }
+    }
+
+    function addMessage(text, sender) {
+      const chatBox = document.getElementById('chat-box');
+      const msg = document.createElement('div');
+      msg.className = 'message ' + sender;
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
